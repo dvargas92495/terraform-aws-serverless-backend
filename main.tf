@@ -6,7 +6,7 @@ locals {
 
   methods = {
       for path in var.paths:
-      path => local.path_parts[path][length(local.path_parts) - 1]
+      path => local.path_parts[path][length(local.path_parts[path]) - 1]
   }
 
   resources = distinct([
