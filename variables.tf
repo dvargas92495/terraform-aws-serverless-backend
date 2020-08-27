@@ -1,4 +1,4 @@
-variable "methods" {
+variable "paths" {
   type        = list
   description = "The list of paths the API supports."
   default     = []
