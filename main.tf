@@ -14,7 +14,7 @@ locals {
   ])
 
   function_names = {
-    for lambda in local.paths:
+    for lambda in var.paths:
     lambda => join("_", local.path_parts[lambda])
   }
 }
@@ -70,7 +70,7 @@ resource "aws_api_gateway_resource" "resource" {
 }
 
 resource "aws_lambda_function" "lambda_function" {
-  for_each      = toset(local.paths)
+  for_each      = toset(var.paths)
 
   function_name = "${var.api_name}_${local.function_names[each.value]}"
   role          = aws_iam_role.lambda_role.arn
@@ -83,15 +83,16 @@ resource "aws_lambda_function" "lambda_function" {
 }
 
 resource "aws_api_gateway_method" "method" {
-  for_each      = toset(local.paths)
+  for_each      = toset(var.paths)
 
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   resource_id   = aws_api_gateway_resource.resource[local.path_parts[each.value][0]].id
   http_method   = upper(local.methods[each.value])
+  authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "integration" {
-  for_each                = toset(local.paths)
+  for_each                = toset(var.paths)
 
   rest_api_id             = aws_api_gateway_rest_api.rest_api.id
   resource_id             = aws_api_gateway_resource.resource[local.path_parts[each.value][0]].id
@@ -117,6 +118,7 @@ resource "aws_api_gateway_method" "options" {
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   resource_id   = aws_api_gateway_resource.resource[each.value].id
   http_method   = "OPTIONS"
+  authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "mock" {
