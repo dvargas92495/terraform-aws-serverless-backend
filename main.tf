@@ -103,7 +103,7 @@ resource "aws_api_gateway_integration" "integration" {
 }
 
 resource "aws_lambda_permission" "apigw_lambda" {
-  for_each      = toset(local.paths)
+  for_each      = toset(var.paths)
 
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
