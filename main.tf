@@ -199,7 +199,7 @@ data "aws_iam_policy_document" "deploy_policy" {
 }
 
 resource "aws_iam_user" "update_lambda" {
-  name  = "${local.primary_domain}-lambda"
+  name  = "${var.api_name}-lambda"
   path  = "/"
 }
 
