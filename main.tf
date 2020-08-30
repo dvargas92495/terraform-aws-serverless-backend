@@ -187,3 +187,27 @@ resource "aws_api_gateway_deployment" "production" {
     aws_lambda_permission.apigw_lambda
   ]
 }
+
+data "aws_iam_policy_document" "deploy_policy" {
+    statement {
+      actions = [
+        "lambda:UpdateFunctionCode"
+      ]
+
+      resources = aws_lambda_function.lambda_function.*.arn
+    }
+}
+
+resource "aws_iam_user" "update_lambda" {
+  name  = "${local.primary_domain}-lambda"
+  path  = "/"
+}
+
+resource "aws_iam_access_key" "update_lambda" {
+  user  = aws_iam_user.update_lambda.name
+}
+
+resource "aws_iam_user_policy" "update_lambda" {
+  user   = aws_iam_user.update_lambda.name
+  policy = data.aws_iam_policy_document.deploy_policy.json
+}
