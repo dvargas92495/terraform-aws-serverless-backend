@@ -32,3 +32,9 @@ module "aws_serverless_backend" {
 - `paths` are the list of path methods that your api supports.
 - `api_name` is name given to the api.
 - `tags` tags to add on to lambdas and api gateway
+
+## Output
+
+- `rest_api_id` the id of the created rest api
+- `access_key` the AWS_ACCESS_KEY_ID of the created user
+- `secret_key` the AWS_SECRET_ACCESS_KEY of the created user
