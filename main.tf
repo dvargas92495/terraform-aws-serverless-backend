@@ -38,6 +38,32 @@ data "aws_iam_policy_document" "assume_lambda_policy" {
       identifiers = ["lambda.amazonaws.com"]
     }
   }
+
+  statement {
+		actions = [
+      "dynamodb:BatchGetItem",
+      "dynamodb:GetItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem"
+    ]
+		resources = ["*"]
+	}
+	
+  statement	{
+		actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+		resources = ["*"]
+	}
+
+	statement	{
+		actions = ["logs:CreateLogGroup"]
+		resources = ["*"]
+	}
 }
 
 resource "aws_iam_role" "lambda_role" {
