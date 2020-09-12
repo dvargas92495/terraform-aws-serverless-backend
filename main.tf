@@ -38,7 +38,9 @@ data "aws_iam_policy_document" "assume_lambda_policy" {
       identifiers = ["lambda.amazonaws.com"]
     }
   }
+}
 
+data "aws_iam_policy_document" "lambda_execution_policy" {
   statement {
 		actions = [
       "dynamodb:BatchGetItem",
@@ -66,10 +68,20 @@ data "aws_iam_policy_document" "assume_lambda_policy" {
 	}
 }
 
+resource "aws_iam_policy" "lambda_execution_policy" {
+  name = "${var.api_name}-lambda-execution"
+  policy = data.aws_iam_policy_document.lambda_execution_policy.json
+}
+
 resource "aws_iam_role" "lambda_role" {
   name = "${var.api_name}-lambda-execution"
   assume_role_policy = data.aws_iam_policy_document.assume_lambda_policy.json
   tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "test-attach" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_execution_policy.arn
 }
 
 resource "aws_api_gateway_rest_api" "rest_api" {
