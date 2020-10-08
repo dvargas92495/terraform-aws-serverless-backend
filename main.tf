@@ -49,7 +49,8 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
       "dynamodb:Scan",
       "dynamodb:BatchWriteItem",
       "dynamodb:PutItem",
-      "dynamodb:UpdateItem"
+      "dynamodb:UpdateItem",
+      "ses:sendEmail"
     ]
 		resources = ["*"]
 	}
