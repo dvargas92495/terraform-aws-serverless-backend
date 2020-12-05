@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "assume_lambda_policy" {
 
 data "aws_iam_policy_document" "lambda_execution_policy" {
   statement {
-		actions = [
+    actions = [
       "dynamodb:BatchGetItem",
       "dynamodb:GetItem",
       "dynamodb:Query",
@@ -52,21 +52,21 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
       "dynamodb:UpdateItem",
       "ses:sendEmail"
     ]
-		resources = ["*"]
-	}
-	
+    resources = ["*"]
+  }
+
   statement	{
-		actions = [
+    actions = [
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
-		resources = ["*"]
-	}
+    resources = ["*"]
+  }
 
-	statement	{
-		actions = ["logs:CreateLogGroup"]
-		resources = ["*"]
-	}
+  statement	{
+    actions = ["logs:CreateLogGroup"]
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_policy" "lambda_execution_policy" {
@@ -117,6 +117,7 @@ resource "aws_lambda_function" "lambda_function" {
   filename      = data.archive_file.dummy.output_path
   runtime       = "nodejs12.x"
   publish       = false
+  timeout       = 10
 
   tags = var.tags
 }
