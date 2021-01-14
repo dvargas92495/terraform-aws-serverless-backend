@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
       "ses:sendEmail",
-      "lambda:invokeAsync"
+      "lambda:InvokeFunction"
     ]
     resources = ["*"]
   }
