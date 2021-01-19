@@ -231,13 +231,15 @@ resource "aws_api_gateway_deployment" "production" {
 }
 
 data "aws_iam_policy_document" "deploy_policy" {
-    statement {
-      actions = [
-        "lambda:UpdateFunctionCode"
-      ]
+  statement {
+    actions = [
+      "lambda:UpdateFunctionCode"
+    ]
 
-      resources = values(aws_lambda_function.lambda_function)[*].arn
-    }
+    resources = [
+      "${split("_", values(aws_lambda_function.lambda_function)[0].arn)}_*"
+    ]
+  }
 }
 
 resource "aws_iam_user" "update_lambda" {
