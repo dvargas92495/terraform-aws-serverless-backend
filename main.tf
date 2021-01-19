@@ -237,7 +237,7 @@ data "aws_iam_policy_document" "deploy_policy" {
     ]
 
     resources = [
-      "${split("_", values(aws_lambda_function.lambda_function)[0].arn)}_*"
+      "${split("_", aws_lambda_function.lambda_function[var.paths[0]].arn)}_*"
     ]
   }
 }
