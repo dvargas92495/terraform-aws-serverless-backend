@@ -9,5 +9,5 @@ module "aws-serverless-backend" {
     paths = [
         "resource/get"
     ]
-    domain = "example.com"
+    domain = "davidvargas.me"
 }
