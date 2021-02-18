@@ -24,6 +24,7 @@ module "aws_serverless_backend" {
         "resource/get",
         "another_resource/post"
     ]
+    domain = "example.com"
 }
 ```
 
@@ -32,6 +33,7 @@ module "aws_serverless_backend" {
 - `paths` are the list of path methods that your api supports.
 - `api_name` is name given to the api.
 - `tags` tags to add on to lambdas and api gateway
+- `domain` the domain to map the api to.
 
 ## Output
 
