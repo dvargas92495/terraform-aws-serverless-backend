@@ -292,7 +292,7 @@ resource "aws_api_gateway_domain_name" "api" {
 resource "aws_route53_record" "api" {
   name    = aws_api_gateway_domain_name.api.domain_name
   type    = "A"
-  zone_id = data.aws_route53_zone.longwave.id
+  zone_id = data.aws_route53_zone.zone.id
 
   alias {
     evaluate_target_health = true
