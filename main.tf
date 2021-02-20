@@ -228,6 +228,10 @@ resource "aws_api_gateway_deployment" "production" {
     aws_api_gateway_method_response.mock,
     aws_lambda_permission.apigw_lambda
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 data "aws_iam_policy_document" "deploy_policy" {
