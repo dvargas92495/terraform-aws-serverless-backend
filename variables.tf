@@ -19,3 +19,9 @@ variable "domain" {
     type        = string
     description = "The domain that the api will be mapped to."
 }
+
+variable "cors" {
+    type        = list
+    description = "The list of resources that will restrict cors to the input domain. This variable is temporary until all endpoints use domain to restrict CORS."
+    default = []
+}

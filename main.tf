@@ -195,7 +195,8 @@ resource "aws_api_gateway_method_response" "mock" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers"     = true,
     "method.response.header.Access-Control-Allow-Methods"     = true,
-    "method.response.header.Access-Control-Allow-Origin"      = true
+    "method.response.header.Access-Control-Allow-Origin"      = true,
+    "method.response.header.Access-Control-Allow-Credentials" = true
   }
 }
 
@@ -210,7 +211,8 @@ resource "aws_api_gateway_integration_response" "mock" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers"     = "'Authorization, Content-Type'",
     "method.response.header.Access-Control-Allow-Methods"     = "'GET,DELETE,OPTIONS,POST,PUT'",
-    "method.response.header.Access-Control-Allow-Origin"      = "'*'"
+    "method.response.header.Access-Control-Allow-Origin"      = contains(var.cors, each.value) ? "'https://${var.domain}'" : "'*'",
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
 }
 
