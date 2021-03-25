@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
     actions = [
       "sts:AssumeRole"
     ]
-    reources = [
+    resources = [
       "arn:aws:iam::*:role/${var.api_name}-lambda-execution"
     ]
   }
