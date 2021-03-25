@@ -52,22 +52,21 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
       "dynamodb:UpdateItem",
       "ses:sendEmail",
       "lambda:InvokeFunction",
-      "s3:PutObject"
-    ]
-    resources = ["*"]
-  }
-
-  statement	{
-    actions = [
+      "s3:PutObject",
       "logs:CreateLogStream",
-      "logs:PutLogEvents"
+      "logs:PutLogEvents",
+      "logs:CreateLogGroup"
     ]
     resources = ["*"]
   }
 
-  statement	{
-    actions = ["logs:CreateLogGroup"]
-    resources = ["*"]
+  statement {
+    actions = [
+      "sts:AssumeRole"
+    ]
+    reources = [
+      "arn:aws:iam::*:role/${var.api_name}-lambda-execution"
+    ]
   }
 }
 
