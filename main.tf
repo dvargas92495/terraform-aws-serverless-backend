@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
       "dynamodb:UpdateItem",
       "ses:sendEmail",
       "lambda:InvokeFunction",
-      "s3:ListObjectsV2",
+      "s3:ListBucket",
       "s3:PutObject",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
