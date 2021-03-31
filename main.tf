@@ -43,6 +43,7 @@ data "aws_iam_policy_document" "assume_lambda_policy" {
 data "aws_iam_policy_document" "lambda_execution_policy" {
   statement {
     actions = [
+      "cloudfront:CreateInvalidation"
       "dynamodb:BatchGetItem",
       "dynamodb:GetItem",
       "dynamodb:Query",
@@ -54,6 +55,7 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
       "lambda:InvokeFunction",
       "s3:ListBucket",
       "s3:PutObject",
+      "s3:DeleteObject",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
       "logs:CreateLogGroup"
