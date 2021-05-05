@@ -44,6 +44,7 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
   statement {
     actions = [
       "cloudfront:CreateInvalidation",
+      "cloudfront:GetInvalidation",
       "dynamodb:BatchGetItem",
       "dynamodb:GetItem",
       "dynamodb:Query",
