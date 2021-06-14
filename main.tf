@@ -52,6 +52,7 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
       "dynamodb:BatchWriteItem",
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
       "ses:sendEmail",
       "lambda:InvokeFunction",
       "s3:GetObject",
