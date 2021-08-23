@@ -223,6 +223,7 @@ resource "aws_api_gateway_integration_response" "mock" {
 }
 
 resource "aws_api_gateway_deployment" "production" {
+  count = length(var.paths) > 0 ? 1 : 0
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
   stage_name  = "production"
   stage_description = base64gzip(join("|", concat(var.paths, var.cors)))
@@ -314,6 +315,7 @@ resource "aws_route53_record" "api" {
 }
 
 resource "aws_api_gateway_base_path_mapping" "api" {
+  count       = length(var.paths) > 0 ? 1 : 0
   api_id      = aws_api_gateway_rest_api.rest_api.id
   stage_name  = aws_api_gateway_deployment.production.stage_name
   domain_name = aws_api_gateway_domain_name.api.domain_name
