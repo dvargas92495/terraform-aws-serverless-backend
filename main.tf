@@ -249,7 +249,7 @@ data "aws_iam_policy_document" "deploy_policy" {
     ]
 
     resources = [
-      "${split("_", aws_lambda_function.lambda_function[var.paths[0]].arn)[0]}_*"
+      "${join(":", slice(split(":", replace(aws_api_gateway_rest_api.rest_api.execution_arn, "execute-api", "lambda")), 0, 5))}:function:${var.api_name}_*"
     ]
   }
 }
