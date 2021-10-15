@@ -6,12 +6,7 @@ variable "api_name" {
 variable "paths" {
   type        = list
   description = "The list of paths the API supports. By default, it will read the `functions` directory."
-  # Still TODO
-  # - filter out non js/ts file extensions
-  # - filter out paths that start in underscore
-  default     = [
-    for path in fileset("${path.module}/functions", "**"): replace(path, "/\\.ts$/", "")
-  ]
+  default     = []
 }
 
 variable "tags" {
@@ -25,5 +20,5 @@ variable "tags" {
 variable "domain" {
     type        = string
     description = "The domain that the api will be mapped to. By default, it will use tha API name, remapping `-` to `.`"
-    default = replace(var.api_name, "-", ".")
+    default = ""
 }

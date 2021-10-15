@@ -1,20 +1,29 @@
 locals {
+  # Still TODO
+  # - filter out non js/ts file extensions
+  # - filter out paths that start in underscore
+  paths = length(local.paths) > 0 ? var.paths : [
+    for path in fileset("${path.module}/functions", "**"): replace(path, "/\\.ts$/", "")
+  ]
+
+  domain = length(local.paths) > 0 ? var.domain : replace(var.api_name, "-", ".")
+
   path_parts = {
-     for path in var.paths:
+     for path in local.paths:
      path => split("/", path)
   }
 
   methods = {
-      for path in var.paths:
+      for path in local.paths:
       path => local.path_parts[path][length(local.path_parts[path]) - 1]
   }
 
   resources = distinct([
-    for path in var.paths: local.path_parts[path][0]
+    for path in local.paths: local.path_parts[path][0]
   ])
 
   function_names = {
-    for lambda in var.paths:
+    for lambda in local.paths:
     lambda => join("_", local.path_parts[lambda])
   }
 }
@@ -116,7 +125,7 @@ resource "aws_api_gateway_resource" "resource" {
 }
 
 resource "aws_lambda_function" "lambda_function" {
-  for_each      = toset(var.paths)
+  for_each      = toset(local.paths)
 
   function_name = "${var.api_name}_${local.function_names[each.value]}"
   role          = aws_iam_role.lambda_role.arn
@@ -130,7 +139,7 @@ resource "aws_lambda_function" "lambda_function" {
 }
 
 resource "aws_api_gateway_method" "method" {
-  for_each      = toset(var.paths)
+  for_each      = toset(local.paths)
 
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   resource_id   = aws_api_gateway_resource.resource[local.path_parts[each.value][0]].id
@@ -139,7 +148,7 @@ resource "aws_api_gateway_method" "method" {
 }
 
 resource "aws_api_gateway_integration" "integration" {
-  for_each                = toset(var.paths)
+  for_each                = toset(local.paths)
 
   rest_api_id             = aws_api_gateway_rest_api.rest_api.id
   resource_id             = aws_api_gateway_resource.resource[local.path_parts[each.value][0]].id
@@ -150,7 +159,7 @@ resource "aws_api_gateway_integration" "integration" {
 }
 
 resource "aws_lambda_permission" "apigw_lambda" {
-  for_each      = toset(var.paths)
+  for_each      = toset(local.paths)
 
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
@@ -217,16 +226,16 @@ resource "aws_api_gateway_integration_response" "mock" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers"     = "'Authorization, Content-Type'",
     "method.response.header.Access-Control-Allow-Methods"     = "'GET,DELETE,OPTIONS,POST,PUT'",
-    "method.response.header.Access-Control-Allow-Origin"      = "'https://${var.domain}'",
+    "method.response.header.Access-Control-Allow-Origin"      = "'https://${local.domain}'",
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
 }
 
 resource "aws_api_gateway_deployment" "production" {
-  count = length(var.paths) > 0 ? 1 : 0
+  count = length(local.paths) > 0 ? 1 : 0
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
   stage_name  = "production"
-  stage_description = base64gzip(join("|", var.paths))
+  stage_description = base64gzip(join("|", local.paths))
 
   depends_on  = [
     aws_api_gateway_integration.integration, 
@@ -271,11 +280,11 @@ resource "aws_iam_user_policy" "update_lambda" {
 }
 
 data "aws_route53_zone" "zone" {
-  name = var.domain
+  name = local.domain
 }
 
 resource "aws_acm_certificate" "api" {
-  domain_name       = "api.${var.domain}"
+  domain_name       = "api.${local.domain}"
   validation_method = "DNS"
 
   tags = var.tags
@@ -300,7 +309,7 @@ resource "aws_acm_certificate_validation" "api" {
 
 resource "aws_api_gateway_domain_name" "api" {
   certificate_arn = aws_acm_certificate_validation.api.certificate_arn
-  domain_name     = "api.${var.domain}"
+  domain_name     = "api.${local.domain}"
 }
 
 resource "aws_route53_record" "api" {
@@ -316,7 +325,7 @@ resource "aws_route53_record" "api" {
 }
 
 resource "aws_api_gateway_base_path_mapping" "api" {
-  count       = length(var.paths) > 0 ? 1 : 0
+  count       = length(local.paths) > 0 ? 1 : 0
   api_id      = aws_api_gateway_rest_api.rest_api.id
   stage_name  = aws_api_gateway_deployment.production[0].stage_name
   domain_name = aws_api_gateway_domain_name.api.domain_name
