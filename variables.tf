@@ -12,9 +12,7 @@ variable "paths" {
 variable "tags" {
     type        = map
     description = "A map of tags to add to all resources. By default, it includes 1 Application tag mapping to the api_name"
-    default     = {
-        Application = var.api_name
-    }
+    default     = {}
 }
 
 variable "domain" {

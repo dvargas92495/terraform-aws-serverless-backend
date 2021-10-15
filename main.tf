@@ -2,11 +2,15 @@ locals {
   # Still TODO
   # - filter out non js/ts file extensions
   # - filter out paths that start in underscore
-  paths = length(local.paths) > 0 ? var.paths : [
+  paths = length(var.paths) > 0 ? var.paths : [
     for path in fileset("${path.module}/functions", "**"): replace(path, "/\\.ts$/", "")
   ]
 
-  domain = length(local.paths) > 0 ? var.domain : replace(var.api_name, "-", ".")
+  domain = length(var.domain) > 0 ? var.domain : replace(var.api_name, "-", ".")
+
+  tags = length(var.tags) > 0 ? var.tags : {
+    Application = var.api_name
+  }
 
   path_parts = {
      for path in local.paths:
@@ -93,7 +97,7 @@ resource "aws_iam_policy" "lambda_execution_policy" {
 resource "aws_iam_role" "lambda_role" {
   name = "${var.api_name}-lambda-execution"
   assume_role_policy = data.aws_iam_policy_document.assume_lambda_policy.json
-  tags = var.tags
+  tags = local.tags
 }
 
 resource "aws_iam_role_policy_attachment" "test-attach" {
@@ -113,7 +117,7 @@ resource "aws_api_gateway_rest_api" "rest_api" {
     "application/octet-stream"
   ]
 
-  tags = var.tags
+  tags = local.tags
 }
 
 resource "aws_api_gateway_resource" "resource" {
@@ -135,7 +139,7 @@ resource "aws_lambda_function" "lambda_function" {
   publish       = false
   timeout       = 10
 
-  tags = var.tags
+  tags = local.tags
 }
 
 resource "aws_api_gateway_method" "method" {
@@ -287,7 +291,7 @@ resource "aws_acm_certificate" "api" {
   domain_name       = "api.${local.domain}"
   validation_method = "DNS"
 
-  tags = var.tags
+  tags = local.tags
 
   lifecycle {
     create_before_destroy = true
