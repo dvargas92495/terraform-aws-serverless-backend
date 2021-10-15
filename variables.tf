@@ -1,6 +1,6 @@
 variable "paths" {
   type        = list
-  description = "The list of paths the API supports."
+  description = "The list of paths the API supports. By default, it will read the `functions` directory"
   default     = []
 }
 
