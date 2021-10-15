@@ -30,10 +30,10 @@ module "aws_serverless_backend" {
 
 ## Inputs
 
-- `paths` are the list of path methods that your api supports.
 - `api_name` is name given to the api.
-- `tags` tags to add on to lambdas and api gateway
-- `domain` the domain to map the api to.
+- `paths` are the list of paths the API supports. By default, it will read the `functions` directory.
+- `tags` are a map of tags to add to all resources. By default, it includes 1 Application tag mapping to the `api_name`.
+- `domain` is the domain that the api will be mapped to. By default, it will use tha API name, remapping `-` to `.`.
 
 ## Output
 
