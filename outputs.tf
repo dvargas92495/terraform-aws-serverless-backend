@@ -12,3 +12,8 @@ output "rest_api_id" {
   description = "The name of the main rest API Gateway."
   value       = aws_api_gateway_rest_api.rest_api.id
 }
+
+output "paths" {
+  description = "THIS IS JUST A TEST. DO NOT USE"
+  value =  local.paths
+}
