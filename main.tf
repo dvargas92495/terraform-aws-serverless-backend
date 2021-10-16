@@ -284,7 +284,7 @@ resource "aws_iam_user_policy" "update_lambda" {
 }
 
 data "aws_route53_zone" "zone" {
-  name = local.domain
+  name = join(".", reverse(slice(reverse(split(".", local.domain)), 0, 2)))
 }
 
 resource "aws_acm_certificate" "api" {
