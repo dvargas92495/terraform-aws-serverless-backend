@@ -6,8 +6,4 @@ module "aws-serverless-backend" {
     source = "../.."
 
     api_name = "example"
-    paths = [
-        "resource/get"
-    ]
-    domain = "davidvargas.me"
 }
