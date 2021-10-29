@@ -12,5 +12,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
-      - run: terraform -chdir test/integration init
-      - run: terraform -chdir test/integration plan
+      - run: terraform -chdir=test/integration init
+      - run: terraform -chdir=test/integration plan
