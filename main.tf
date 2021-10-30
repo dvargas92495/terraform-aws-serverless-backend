@@ -1,9 +1,6 @@
 locals {
-  # Still TODO
-  # - filter out non js/ts file extensions
-  # - filter out paths that start in underscore
   paths = length(var.paths) > 0 ? var.paths : [
-    for path in fileset("${path.root}/functions", "[^_]*/**/*.ts"): replace(path, "/\\.ts$/", "")
+    for path in fileset("${path.root}/functions", "{[^_]*/**/*,*}.ts"): replace(path, "/\\.ts$/", "")
   ]
 
   domain = length(var.domain) > 0 ? var.domain : replace(var.api_name, "-", ".")
