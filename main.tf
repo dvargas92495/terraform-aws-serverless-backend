@@ -1,5 +1,5 @@
 locals {
-  paths = length(var.paths) > 0 ? var.paths : [
+  all_paths = length(var.paths) > 0 ? var.paths : [
     for path in fileset("${path.root}/functions", "**/*.ts"): replace(path, "/\\.ts$/", "") if length(regexall("^[^_]", path)) > 0
   ]
 
@@ -14,6 +14,10 @@ locals {
      path => split("/", path)
   }
 
+  paths = [
+    for path in all_paths: path if length(path_parts[path]) > 1
+  ]
+
   methods = {
       for path in local.paths:
       path => local.path_parts[path][length(local.path_parts[path]) - 1]
@@ -24,7 +28,7 @@ locals {
   ])
 
   function_names = {
-    for lambda in local.paths:
+    for lambda in local.all_paths:
     lambda => join("_", local.path_parts[lambda])
   }
 }
@@ -126,7 +130,7 @@ resource "aws_api_gateway_resource" "resource" {
 }
 
 resource "aws_lambda_function" "lambda_function" {
-  for_each      = toset(local.paths)
+  for_each      = toset(local.all_paths)
 
   function_name = "${var.api_name}_${local.function_names[each.value]}"
   role          = aws_iam_role.lambda_role.arn
