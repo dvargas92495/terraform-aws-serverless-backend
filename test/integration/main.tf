@@ -5,5 +5,5 @@ provider "aws" {
 module "aws-serverless-backend" {
     source = "../.."
 
-    api_name = "example"
+    api_name = "example-com"
 }
