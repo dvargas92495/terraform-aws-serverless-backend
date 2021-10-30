@@ -10,7 +10,7 @@ locals {
   }
 
   path_parts = {
-     for path in local.paths:
+     for path in local.all_paths:
      path => split("/", path)
   }
 
