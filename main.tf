@@ -136,7 +136,7 @@ resource "aws_lambda_function" "lambda_function" {
   role          = aws_iam_role.lambda_role.arn
   handler       = "${local.function_names[each.value]}.handler"
   filename      = data.archive_file.dummy.output_path
-  runtime       = "nodejs12.x"
+  runtime       = "nodejs14.x"
   publish       = false
   timeout       = 10
 
