@@ -1,9 +1,6 @@
 locals {
-  # Still TODO
-  # - filter out non js/ts file extensions
-  # - filter out paths that start in underscore
-  paths = length(var.paths) > 0 ? var.paths : [
-    for path in fileset("${path.root}/functions", "**"): replace(path, "/\\.ts$/", "")
+  all_paths = length(var.paths) > 0 ? var.paths : [
+    for path in fileset("${path.root}/functions", "**/*.ts"): replace(path, "/\\.ts$/", "") if length(regexall("^[^_]", path)) > 0
   ]
 
   domain = length(var.domain) > 0 ? var.domain : replace(var.api_name, "-", ".")
@@ -13,9 +10,13 @@ locals {
   }
 
   path_parts = {
-     for path in local.paths:
+     for path in local.all_paths:
      path => split("/", path)
   }
+
+  paths = [
+    for path in local.all_paths: path if length(local.path_parts[path]) > 1
+  ]
 
   methods = {
       for path in local.paths:
@@ -27,7 +28,7 @@ locals {
   ])
 
   function_names = {
-    for lambda in local.paths:
+    for lambda in local.all_paths:
     lambda => join("_", local.path_parts[lambda])
   }
 }
@@ -129,7 +130,7 @@ resource "aws_api_gateway_resource" "resource" {
 }
 
 resource "aws_lambda_function" "lambda_function" {
-  for_each      = toset(local.paths)
+  for_each      = toset(local.all_paths)
 
   function_name = "${var.api_name}_${local.function_names[each.value]}"
   role          = aws_iam_role.lambda_role.arn
