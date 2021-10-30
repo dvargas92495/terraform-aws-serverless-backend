@@ -15,7 +15,7 @@ locals {
   }
 
   paths = [
-    for path in all_paths: path if length(path_parts[path]) > 1
+    for path in local.all_paths: path if length(local.path_parts[path]) > 1
   ]
 
   methods = {
