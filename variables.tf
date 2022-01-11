@@ -24,5 +24,5 @@ variable "domain" {
 variable "sizes" {
   type        = map
   description = "An optional map for specifying sizes for certain function paths"
-  default     = []
+  default     = {}
 }
