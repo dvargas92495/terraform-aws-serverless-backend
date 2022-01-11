@@ -20,3 +20,9 @@ variable "domain" {
     description = "The domain that the api will be mapped to. By default, it will use tha API name, remapping `-` to `.`"
     default = ""
 }
+
+variable "sizes" {
+  type        = map
+  description = "An optional map for specifying sizes for certain function paths"
+  default     = []
+}

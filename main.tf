@@ -140,6 +140,7 @@ resource "aws_lambda_function" "lambda_function" {
   runtime       = "nodejs14.x"
   publish       = false
   timeout       = 10
+  memory_size   = lookup(var.sizes, each.value, 128)
 
   tags = local.tags
 }
