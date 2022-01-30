@@ -27,7 +27,7 @@ variable "sizes" {
   default     = {}
 }
 
-variable "timeoute" {
+variable "timeouts" {
   type        = map
   description = "An optional map for specifying timeouts for certain function paths"
   default     = {}
