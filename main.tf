@@ -139,7 +139,7 @@ resource "aws_lambda_function" "lambda_function" {
   filename      = data.archive_file.dummy.output_path
   runtime       = "nodejs14.x"
   publish       = false
-  timeout       = 10
+  timeout       = lookup(var.timeouts, each.value, 10)
   memory_size   = lookup(var.sizes, each.value, 128)
 
   tags = local.tags
