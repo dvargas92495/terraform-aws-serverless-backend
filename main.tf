@@ -1,6 +1,6 @@
 locals {
   all_paths = length(var.paths) > 0 ? var.paths : [
-    for path in fileset("${path.root}/functions", "**/*.ts"): replace(path, "/\\.ts$/", "") if length(regexall("^[^_]", path)) > 0
+    for path in fileset("${path.root}/${var.directory}", "**/*.ts"): replace(path, "/\\.ts$/", "") if length(regexall("^[^_]", path)) > 0
   ]
 
   domain = length(var.domain) > 0 ? var.domain : replace(var.api_name, "-", ".")

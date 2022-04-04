@@ -32,3 +32,9 @@ variable "timeouts" {
   description = "An optional map for specifying timeouts for certain function paths"
   default     = {}
 }
+
+variable "directory" {
+  type        = string
+  description = "The directory to look for your API functions."
+  default     = "functions"
+}
