@@ -137,7 +137,7 @@ resource "aws_lambda_function" "lambda_function" {
   role          = aws_iam_role.lambda_role.arn
   handler       = "${local.function_names[each.value]}.handler"
   filename      = data.archive_file.dummy.output_path
-  runtime       = "nodejs14.x"
+  runtime       = "nodejs16.x"
   publish       = false
   timeout       = lookup(var.timeouts, each.value, 10)
   memory_size   = lookup(var.sizes, each.value, 128)
@@ -233,7 +233,7 @@ resource "aws_api_gateway_integration_response" "mock" {
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers"     = "'Authorization, Content-Type'",
     "method.response.header.Access-Control-Allow-Methods"     = "'GET,DELETE,OPTIONS,POST,PUT'",
-    "method.response.header.Access-Control-Allow-Origin"      = "'*'",
+    "method.response.header.Access-Control-Allow-Origin"      = "'https://${local.domain}'",
     "method.response.header.Access-Control-Allow-Credentials" = "'true'"
   }
 }
