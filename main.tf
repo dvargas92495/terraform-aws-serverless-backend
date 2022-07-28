@@ -1,6 +1,6 @@
 locals {
   all_paths = length(var.paths) > 0 ? var.paths : [
-    for path in fileset("${path.root}/${var.directory}", "**/*.ts"): replace(path, "/\\.ts$/", "") if length(regexall("^[^_]", path)) > 0
+    for path in fileset("${path.root}/${var.directory}", "**/*.ts"): replace(path, "/\\.ts$/", "") if length(regexall("^[^_]", path)) > 0 && length(regexall("^ws", path)) == 0
   ]
 
   domain = length(var.domain) > 0 ? var.domain : replace(var.api_name, "-", ".")
@@ -31,7 +31,21 @@ locals {
     for lambda in local.all_paths:
     lambda => join("_", local.path_parts[lambda])
   }
+
+  # lambda_policy_statements = [
+  #   {
+  #     actions = [
+  #       "ses:sendEmail",
+  #       "logs:CreateLogStream",
+  #       "logs:PutLogEvents",
+  #       "logs:CreateLogGroup"
+  #     ],
+  #     resources = ["*"]
+  #   }
+  # ]
 }
+
+data "aws_caller_identity" "current" {}
 
 # lambda resource requires either filename or s3... wow
 data "archive_file" "dummy" {
@@ -68,15 +82,17 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
       "dynamodb:DeleteItem",
-      "ses:sendEmail",
+      "execute-api:Invoke",
+      "execute-api:ManageConnections",
       "lambda:InvokeFunction",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:CreateLogGroup",
       "s3:GetObject",
       "s3:ListBucket",
       "s3:PutObject",
       "s3:DeleteObject",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-      "logs:CreateLogGroup"
+      "ses:sendEmail",
     ]
     resources = ["*"]
   }
@@ -86,7 +102,7 @@ data "aws_iam_policy_document" "lambda_execution_policy" {
       "sts:AssumeRole"
     ]
     resources = [
-      "arn:aws:iam::*:role/${var.api_name}-lambda-execution"
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.api_name}-lambda-execution"
     ]
   }
 }
