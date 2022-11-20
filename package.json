@@ -1,6 +1,6 @@
 {
   "name": "@dvargas92495/aws-serverless-backend",
-  "version": "2.5.5",
+  "version": "2.5.6",
   "description": "Prebuilt AWS Serverless Backend Module for Terraform CDK (cdktf)",
   "main": "lib/aws-serverless-backend.js",
   "types": "lib/aws-serverless-backend.d.ts",
