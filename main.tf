@@ -153,7 +153,7 @@ resource "aws_lambda_function" "lambda_function" {
   role          = aws_iam_role.lambda_role.arn
   handler       = "${local.function_names[each.value]}.handler"
   filename      = data.archive_file.dummy.output_path
-  runtime       = "nodejs16.x"
+  runtime       = "nodejs18.x"
   publish       = false
   timeout       = lookup(var.timeouts, each.value, 10)
   memory_size   = lookup(var.sizes, each.value, 128)
